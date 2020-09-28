@@ -6,7 +6,7 @@ import {
   TOGGLE_REPLY,
   POST_COMMENT_VALUE,
 } from "./types";
-import db from "./db";
+import db from "../db";
 
 export const getCommentsFromDb = () => {
   const comments = db.getComments();

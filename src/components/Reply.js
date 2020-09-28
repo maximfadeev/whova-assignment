@@ -1,46 +1,62 @@
 import React from "react";
-import LikeButtonIcon from "./LikeButton";
 import { connect } from "react-redux";
-import { updateComment } from "../actions";
+import LikeButtonIcon from "./LikeButton";
+import { updateComment } from "../redux/actions";
 import db from "../db";
 
 class Reply extends React.Component {
-  constructor() {
-    super();
-    this.toggleLiked = this.toggleLiked.bind(this);
-  }
-
-  changeLikes(n) {
-    let reply = this.props.reply;
-    let comment = this.props.comment;
-    reply.likes += n;
-    db.updateReplyLikes(comment, reply);
-    reply.isReplyLiked = !reply.isReplyLiked;
-    this.props.updateComment(comment);
-  }
-
-  toggleLiked() {
-    if (this.props.reply.isReplyLiked) {
+  toggleLiked = () => {
+    const { reply } = this.props;
+    if (reply.isReplyLiked) {
       this.changeLikes(-1);
     } else {
       this.changeLikes(1);
     }
+  };
+
+  changeLikes(n) {
+    const { reply, comment, updateComment } = this.props;
+
+    // update reply likes in db then in state
+    reply.likes += n;
+    db.updateReplyLikes(comment, reply);
+    reply.isReplyLiked = !reply.isReplyLiked;
+    updateComment(comment);
   }
 
+  //   <div className='reply-landscape'>
+  //   <img src='profile-picture.png' alt='profile' className='user-picture' />
+  //   <div className='comment-and-reply'>
+  //     <div className='Comment'>
+  //       <p className='comment-text'>
+  //         <b>{reply.name}</b>&nbsp;{reply.text}
+  //       </p>
+  //     </div>
+  //   </div>
+  //   <button className='btn like-btn' onClick={this.toggleLiked} type='button'>
+  //     <LikeButtonIcon isLiked={reply.isReplyLiked} />
+  //   </button>
+  // </div>
+
   render() {
+    const { reply } = this.props;
     return (
-      <div className='Comment'>
-        <img src='profile-picture.png' alt='profile' className='user-picture'></img>
-        <div className='comment-landscape'>
-          <p className='comment-text '>
-            <b>{this.props.reply.name}</b>&nbsp;{this.props.reply.text}
-          </p>
+      <div className='reply-landscape'>
+        <img src='profile-picture.png' alt='profile' className='user-picture' />
+        <div className='comment-and-reply'>
+          <div className='Comment'>
+            <p className='comment-text'>
+              <b>{reply.name}</b>&nbsp;{reply.text}
+            </p>
+          </div>
           <div className='likes-replies'>
-            <p className='likes-count'>{this.props.reply.likes} likes</p>
+            <p className='likes-count'>
+              {reply.likes} {reply.likes === 1 ? " like" : " likes"}
+            </p>
           </div>
         </div>
-        <button className='btn like-btn' onClick={this.toggleLiked}>
-          <LikeButtonIcon isLiked={this.props.reply.isReplyLiked} />
+        <button className='btn like-btn' onClick={this.toggleLiked} type='button'>
+          <LikeButtonIcon isLiked={reply.isReplyLiked} />
         </button>
       </div>
     );

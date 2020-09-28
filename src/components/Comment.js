@@ -1,67 +1,87 @@
 import React from "react";
+import { connect } from "react-redux";
 import LikeButtonIcon from "./LikeButton";
 import CommentFooter from "./CommentFooter";
-import { connect } from "react-redux";
-import { updateComment, toggleLandscape } from "../actions";
+import { updateComment, toggleLandscape } from "../redux/actions";
 import db from "../db";
 
-// change to funciton
 class Comment extends React.Component {
-  constructor() {
-    super();
-
-    this.toggleLiked = this.toggleLiked.bind(this);
-    this.getAvatar = this.getAvatar.bind(this);
-  }
-
-  changeLikes(n) {
-    let comment = this.props.comment;
-    comment.likes += n;
-
-    db.updateCommentLikes(comment);
-
-    comment.isLiked = !comment.isLiked;
-    this.props.updateComment(comment);
-  }
-
-  toggleLiked() {
-    if (this.props.comment.isLiked) {
+  toggleLiked = () => {
+    const { comment } = this.props;
+    if (comment.isLiked) {
       this.changeLikes(-1);
     } else {
       this.changeLikes(1);
     }
-  }
+  };
 
-  getAvatar() {
-    if (!this.props.isLandscape) {
-      return (
-        <p className='comment-text'>
-          <b>{this.props.comment.name}</b>&nbsp;{this.props.comment.text}
-        </p>
-      );
-    } else {
+  getAvatar = () => {
+    const { isLandscape, comment } = this.props;
+    if (!isLandscape) {
       return [
-        <img src='profile-picture.png' alt='profile' className='user-picture'></img>,
-        <div className='comment-landscape'>
-          <p className='comment-text'>
-            <b>{this.props.comment.name}</b>&nbsp;{this.props.comment.text}
-          </p>
-          <CommentFooter comment={this.props.comment} />
-        </div>,
+        <p className='comment-text'>
+          <b>{comment.name}</b>&nbsp;{comment.text}
+        </p>,
+        <button className='btn like-btn ' onClick={this.toggleLiked} type='button'>
+          <LikeButtonIcon isLiked={comment.isLiked} />
+        </button>,
       ];
     }
+    return [
+      <img src='profile-picture.png' alt='profile' className='user-picture' />,
+      <div className='comment-landscape'>
+        <p className='comment-text'>
+          <b>{comment.name}</b>&nbsp;{comment.text}
+        </p>
+        <button className='btn like-btn ' onClick={this.toggleLiked} type='button'>
+          <LikeButtonIcon isLiked={comment.isLiked} />
+        </button>
+        <CommentFooter comment={comment} />
+      </div>,
+    ];
+  };
+
+  changeLikes(n) {
+    const { comment, updateComment } = this.props;
+
+    // update comment likes in db then in state
+    comment.likes += n;
+    db.updateCommentLikes(comment);
+    comment.isLiked = !comment.isLiked;
+    updateComment(comment);
   }
 
   render() {
+    const { isLandscape, comment } = this.props;
+    if (!isLandscape) {
+      return (
+        <div className='Comment'>
+          <p className='comment-text'>
+            <b>{comment.name}</b>&nbsp;{comment.text}
+          </p>
+          <button className='btn like-btn ' onClick={this.toggleLiked} type='button'>
+            <LikeButtonIcon isLiked={comment.isLiked} />
+          </button>
+        </div>
+      );
+    }
     return (
-      <div className='Comment'>
-        {this.getAvatar()}
-        <button className='btn like-btn ' onClick={this.toggleLiked}>
-          <LikeButtonIcon isLiked={this.props.comment.isLiked} />
-        </button>
+      <div className='comment-landscape'>
+        <img src='profile-picture.png' alt='profile' className='user-picture' />
+        <div className='comment-and-reply'>
+          <div className='Comment'>
+            <p className='comment-text'>
+              <b>{comment.name}</b>&nbsp;{comment.text}
+            </p>
+            <button className='btn like-btn ' onClick={this.toggleLiked} type='button'>
+              <LikeButtonIcon isLiked={comment.isLiked} />
+            </button>
+          </div>
+          <CommentFooter comment={comment} />
+        </div>
       </div>
     );
-  }
+  } // const { comment } = this.props;  }
 }
 const mapStateToProps = (state) => ({
   comments: state.commentReducer.comments,

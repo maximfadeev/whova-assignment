@@ -1,87 +1,86 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addComment, updateComment, toggleReply, changePostCommentValue } from "../actions";
+import { addComment, updateComment, toggleReply, changePostCommentValue } from "../redux/actions";
 import db from "../db";
 
 class PostComment extends React.Component {
-  constructor() {
-    super();
+  onTextChange = (event) => {
+    const { changePostCommentValue } = this.props;
+    changePostCommentValue(event.target.value);
+  };
 
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onCommentSubmit = this.onCommentSubmit.bind(this);
-    this.onReplySubmit = this.onReplySubmit.bind(this);
-  }
-
-  onTextChange(event) {
-    this.props.changePostCommentValue(event.target.value);
-  }
-
-  onCommentSubmit(e) {
-    e.preventDefault();
-    let newComment = {
+  onCommentSubmit = (event) => {
+    const { value, comments, addComment, changePostCommentValue } = this.props;
+    const newComment = {
       name: "username",
-      text: this.props.value,
+      text: value,
       likes: 0,
       replies: [],
-      id: this.props.comments.length,
+      id: comments.length,
     };
 
+    // add comment to db, then add isLiked item, then add to state
     db.addComment(newComment);
     newComment.isLiked = false;
-    this.props.addComment(newComment);
-    this.props.changePostCommentValue("");
-  }
+    addComment(newComment);
 
-  onReplySubmit(e) {
-    e.preventDefault();
-    const comment = this.props.comments[this.props.reply.commentId];
-    let replyId = comment.replies.length;
+    // clear post comment text
+    changePostCommentValue("");
 
-    let newReply = {
+    event.preventDefault();
+  };
+
+  onReplySubmit = (event) => {
+    const {
+      comments,
+      reply,
+      value,
+      updateComment,
+      toggleReply,
+      changePostCommentValue,
+    } = this.props;
+    const comment = comments[reply.commentId];
+    const replyId = comment.replies.length;
+
+    const newReply = {
       name: "username",
-      text: this.props.value,
+      text: value,
       likes: 0,
       id: replyId,
     };
 
+    // add reply to db, then add isLiked item, then add to state
     db.addReply(newReply, comment.id);
     newReply.isReplyLiked = false;
     comment.replies.push(newReply);
+    updateComment(comment);
 
-    this.props.updateComment(comment);
-    this.props.toggleReply({ isReplying: false, commentId: null });
-    this.props.changePostCommentValue("");
-  }
+    // change the state of isReplying for postComment
+    toggleReply({ isReplying: false, commentId: null });
+
+    // clear post comment text
+    changePostCommentValue("");
+
+    event.preventDefault();
+  };
 
   render() {
-    const btnDisabled = this.props.value.length === 0;
-    if (this.props.reply.isReplying) {
-      return (
-        <form id='PostComment' onSubmit={this.onReplySubmit}>
-          <textarea
-            type='text'
-            className='post-comment-input'
-            placeholder='Add a comment...'
-            value={this.props.value}
-            onChange={this.onTextChange}
-          ></textarea>
-          <button type='submit' className='post-comment-btn btn' disabled={btnDisabled}>
-            <b>Reply</b>
-          </button>
-        </form>
-      );
-    }
+    const { value, reply } = this.props;
+    const btnDisabled = value.length === 0;
     return (
-      <form id='PostComment' onSubmit={this.onCommentSubmit}>
+      <form
+        id='PostComment'
+        onSubmit={reply.isReplying ? this.onReplySubmit : this.onCommentSubmit}
+      >
         <textarea
           type='text'
           className='post-comment-input'
           placeholder='Add a comment...'
-          value={this.props.value}
+          value={value}
           onChange={this.onTextChange}
-        ></textarea>
+        />
         <button type='submit' className='post-comment-btn btn' disabled={btnDisabled}>
-          <b>Post</b>
+          <b>{reply.isReplying ? "Reply" : "Post"}</b>
         </button>
       </form>
     );

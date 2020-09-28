@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { toggleReply } from "../actions";
+import { toggleReply } from "../redux/actions";
 import Reply from "./Reply";
 
 class CommentFooter extends React.Component {
   constructor() {
     super();
     this.state = {
-      showingReplies: false,
+      isShowingReplies: false,
     };
 
     this.onReplyPress = this.onReplyPress.bind(this);
@@ -15,35 +15,39 @@ class CommentFooter extends React.Component {
     this.getReplies = this.getReplies.bind(this);
   }
 
-  onReplyPress(e) {
-    if (this.props.reply.isReplying && this.props.reply.commentId === this.props.comment.id) {
-      this.props.toggleReply({ isReplying: false, commentId: null });
+  onReplyPress() {
+    const { reply, comment, toggleReply } = this.props;
+    if (reply.isReplying && reply.commentId === comment.id) {
+      toggleReply({ isReplying: false, commentId: null });
     } else {
-      this.props.toggleReply({ isReplying: true, commentId: this.props.comment.id });
+      toggleReply({ isReplying: true, commentId: comment.id });
     }
   }
 
-  toggleShowReplies() {
-    this.setState({ ...this.state, showingReplies: !this.state.showingReplies });
+  getReplies() {
+    const { comment } = this.props;
+    const repliesComponents = comment.replies.map((reply, index) => (
+      <Reply key={`${index}, ${comment.id}`} comment={comment} reply={reply} />
+    ));
+    return repliesComponents;
   }
 
-  getReplies() {
-    const replies = this.props.comment.replies.map((reply, index) => (
-      <Reply key={index} comment={this.props.comment} reply={reply} />
-    ));
-    return replies;
+  toggleShowReplies() {
+    this.setState((prevState) => ({ ...prevState, isShowingReplies: !prevState.isShowingReplies }));
   }
 
   render() {
+    const { reply, comment } = this.props;
+    const { isShowingReplies } = this.state;
     let replyButtonText;
-    if (this.props.reply.isReplying && this.props.comment.id === this.props.reply.commentId) {
+    if (reply.isReplying && comment.id === reply.commentId) {
       replyButtonText = "Cancel";
     } else {
       replyButtonText = "Reply";
     }
-
-    let repliesText, repliesDisplay;
-    if (this.state.showingReplies) {
+    let repliesText;
+    let repliesDisplay;
+    if (isShowingReplies) {
       repliesText = "Hide";
       repliesDisplay = "replies";
     } else {
@@ -53,13 +57,17 @@ class CommentFooter extends React.Component {
     return (
       <div className='CommentFooter'>
         <div className='likes-replies'>
-          <p className='likes-count'>{this.props.comment.likes} likes</p>
-          <button className='btn reply-btn' onClick={this.onReplyPress}>
+          <p className='likes-count'>
+            {comment.likes}
+            {comment.likes === 1 ? " like" : " likes"}
+          </p>
+          <button className='btn reply-btn' onClick={this.onReplyPress} type='button'>
             {replyButtonText}
           </button>
         </div>
-        <button className='btn view-replies-btn' onClick={this.toggleShowReplies}>
-          {repliesText} replies
+        <button className='btn view-replies-btn' onClick={this.toggleShowReplies} type='button'>
+          {repliesText} {comment.replies.length}
+          {comment.replies.length === 1 ? " reply" : " replies"}
         </button>
         <div className={repliesDisplay}>{this.getReplies()}</div>
       </div>

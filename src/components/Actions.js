@@ -4,13 +4,13 @@ import { faHeart, faComment, faPaperPlane, faBookmark } from "@fortawesome/free-
 
 function Actions() {
   return (
-    <div id="Actions">
-      <div id="left-actions">
-        <FontAwesomeIcon icon={faHeart} size="2x" />
-        <FontAwesomeIcon icon={faComment} size="2x" />
-        <FontAwesomeIcon icon={faPaperPlane} size="2x" />
+    <div id='Actions'>
+      <div id='left-actions'>
+        <FontAwesomeIcon icon={faHeart} size='2x' />
+        <FontAwesomeIcon icon={faComment} size='2x' />
+        <FontAwesomeIcon icon={faPaperPlane} size='2x' />
       </div>
-      <FontAwesomeIcon icon={faBookmark} size="2x" />
+      <FontAwesomeIcon icon={faBookmark} size='2x' />
     </div>
   );
 }

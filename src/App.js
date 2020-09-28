@@ -1,110 +1,103 @@
 import React from "react";
 import "./App.css";
+import { connect } from "react-redux";
 import Header from "./components/Header";
 import Actions from "./components/Actions";
 import Comment from "./components/Comment";
 import PostComment from "./components/PostComment";
-import { connect } from "react-redux";
-import { getCommentsFromDb, toggleLandscape, toggleReply } from "./actions";
+import { getCommentsFromDb, toggleLandscape, toggleReply } from "./redux/actions";
 
 class App extends React.Component {
   componentDidMount() {
-    this.props.getCommentsFromDb();
+    const { getCommentsFromDb } = this.props;
+    getCommentsFromDb();
   }
 
   onViewBtnClick = () => {
-    this.props.toggleLandscape();
-    this.props.toggleReply({ isReplying: false, commentId: null });
-  };
-
-  getViewCommentsBtn = () => {
-    if (!this.props.isLandscape) {
-      return (
-        <button className='view-comments-btn btn' onClick={this.onViewBtnClick}>
-          <b>View all {this.props.comments.length} comments</b>
-        </button>
-      );
-    } else {
-      return (
-        <button className='view-comments-btn btn' onClick={this.onViewBtnClick}>
-          <b>Hide all {this.props.comments.length} comments</b>
-        </button>
-      );
-    }
+    const { toggleLandscape, toggleReply } = this.props;
+    toggleLandscape();
+    toggleReply({ isReplying: false, commentId: null });
   };
 
   render() {
+    const { isLandscape, comments } = this.props;
     const hours = <p className='info-text hours'>14 hours ago</p>;
+    const viewHide = isLandscape ? "Hide" : "View";
+    let commentComponents = comments.map((comment, index) => (
+      <Comment key={index} comment={comment} />
+    ));
 
-    let comments = this.props.comments;
-    if (this.props.isLandscape) {
-      comments = comments.map((comment, index) => <Comment key={index} comment={comment} />);
-    } else {
-      comments = comments
-        .slice(Math.max(comments.length - 4, 0))
-        .map((comment, index) => <Comment key={index} comment={comment} />);
-    }
+    // if vertical only show 4 comments
+    if (!isLandscape) commentComponents = commentComponents.slice(Math.max(comments.length - 4, 0));
 
-    if (!this.props.isLandscape) {
+    if (!isLandscape) {
       return (
         <div className='center'>
           <div className='App vertical'>
             <Header />
-            <img id='post-image' src='sample-post.jpg' alt='sample-post'></img>
+            <img id='post-image' src='sample-post.jpg' alt='sample-post' />
             <Actions />
             <b>
-              <p className='info-text'>56 likes</p>
+              <p className='info-text'>54 likes</p>
             </b>
-
             <div className='comments-vertical'>
               <div className='Comment'>
                 <p className='comment-text'>
                   <b>nasa</b>&nbsp;Starry night
                 </p>
               </div>
-              {this.getViewCommentsBtn()}
-              {comments}
+              <button className='view-comments-btn btn' onClick={this.onViewBtnClick} type='button'>
+                <b>
+                  {viewHide} all {comments.length}
+                  {comments.length === 1 ? " comment" : " comments"}
+                </b>
+              </button>
+              {commentComponents}
             </div>
-
             {hours}
-
             <PostComment />
           </div>
         </div>
       );
-    } else {
-      return (
-        <div className='center'>
-          <div className='App landscape'>
-            <div id='post-image-wrap'>
-              <img id='post-image' src='sample-post.jpg' alt='sample-post'></img>
-            </div>
-            <div className='landscape-right'>
-              <Header />
-              <div className='comments-landscape'>
-                <div className='Comment'>
-                  <img src='nasa-profile.png' alt='profile' className='poster-picture'></img>
-                  <div className='comment-landscape'>
-                    <p className='comment-text '>
+    }
+    return (
+      <div className='center'>
+        <div className='App landscape'>
+          <div id='post-image-wrap'>
+            <img id='post-image' src='sample-post.jpg' alt='sample-post' />
+          </div>
+          <div className='landscape-right'>
+            <Header />
+            <div className='comments-landscape'>
+              <div className='comment-landscape'>
+                <img src='nasa-profile.png' alt='profile' className='poster-picture' />
+                <div className='comment-and-reply'>
+                  <div className='Comment'>
+                    <p className='comment-text'>
                       <b>nasa</b>&nbsp;Starry night
                     </p>
                   </div>
                 </div>
-                {this.getViewCommentsBtn()}
-                {comments}
               </div>
-              <Actions />
-              <b>
-                <p className='info-text'>56 likes</p>
-              </b>
-              {hours}
 
-              <PostComment />
+              <button className='view-comments-btn btn' onClick={this.onViewBtnClick} type='button'>
+                <b>
+                  {viewHide} all {comments.length}
+                  {comments.length === 1 ? " comment" : " comments"}
+                </b>
+              </button>
+              {commentComponents}
             </div>
+            <Actions />
+            <b>
+              <p className='info-text'>54 likes</p>
+            </b>
+            {hours}
+            <PostComment />
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 }
 
