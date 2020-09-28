@@ -9,6 +9,7 @@ class CommentFooter extends React.Component {
     this.state = {
       showingReplies: false,
     };
+
     this.onReplyPress = this.onReplyPress.bind(this);
     this.toggleShowReplies = this.toggleShowReplies.bind(this);
     this.getReplies = this.getReplies.bind(this);
@@ -27,7 +28,6 @@ class CommentFooter extends React.Component {
   }
 
   getReplies() {
-    console.log("getReplies", this.props.comment.replies);
     const replies = this.props.comment.replies.map((reply, index) => (
       <Reply key={index} comment={this.props.comment} reply={reply} />
     ));

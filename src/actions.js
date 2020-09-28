@@ -4,26 +4,12 @@ import {
   TOGGLE_LANDSCAPE,
   UPDATE_COMMENT,
   TOGGLE_REPLY,
+  POST_COMMENT_VALUE,
 } from "./types";
 import db from "./db";
 
-// find a better place and name for these
-// let getComments = function (key) {
-//   let comments = localStorage.getItem(key);
-//   if (comments === null) {
-//     return [];
-//   } else {
-//     return JSON.parse(localStorage.getItem(key));
-//   }
-// };
-
-// let setComments = function (key, val) {
-//   localStorage.setItem(key, JSON.stringify(val));
-// };
-
 export const getCommentsFromDb = () => {
   const comments = db.getComments();
-  // let comments = JSON.parse(localStorage.getItem("comments")) || [];
   return { type: FETCH_COMMENTS, payload: comments };
 };
 
@@ -47,16 +33,16 @@ export const toggleLandscape = () => {
   };
 };
 
-// export const setReplyIsLiked = (comment) => {
-//   return {
-//     type: SET_LIKES,
-//     payload: comment,
-//   };
-// };
-
 export const toggleReply = (replyState) => {
   return {
     type: TOGGLE_REPLY,
     payload: replyState,
+  };
+};
+
+export const changePostCommentValue = (value) => {
+  return {
+    type: POST_COMMENT_VALUE,
+    payload: value,
   };
 };

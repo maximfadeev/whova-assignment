@@ -1,14 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addComment, updateComment } from "../actions";
+import { addComment, updateComment, toggleReply, changePostCommentValue } from "../actions";
 import db from "../db";
 
 class PostComment extends React.Component {
   constructor() {
     super();
-    this.state = {
-      value: "",
-    };
 
     this.onTextChange = this.onTextChange.bind(this);
     this.onCommentSubmit = this.onCommentSubmit.bind(this);
@@ -16,14 +13,14 @@ class PostComment extends React.Component {
   }
 
   onTextChange(event) {
-    this.setState({ value: event.target.value });
+    this.props.changePostCommentValue(event.target.value);
   }
 
   onCommentSubmit(e) {
     e.preventDefault();
     let newComment = {
       name: "username",
-      text: this.state.value,
+      text: this.props.value,
       likes: 0,
       replies: [],
       id: this.props.comments.length,
@@ -32,7 +29,7 @@ class PostComment extends React.Component {
     db.addComment(newComment);
     newComment.isLiked = false;
     this.props.addComment(newComment);
-    this.setState({ value: "" });
+    this.props.changePostCommentValue("");
   }
 
   onReplySubmit(e) {
@@ -42,7 +39,7 @@ class PostComment extends React.Component {
 
     let newReply = {
       name: "username",
-      text: this.state.value,
+      text: this.props.value,
       likes: 0,
       id: replyId,
     };
@@ -50,12 +47,14 @@ class PostComment extends React.Component {
     db.addReply(newReply, comment.id);
     newReply.isReplyLiked = false;
     comment.replies.push(newReply);
+
     this.props.updateComment(comment);
-    this.setState({ value: "" });
+    this.props.toggleReply({ isReplying: false, commentId: null });
+    this.props.changePostCommentValue("");
   }
 
   render() {
-    const btnDisabled = this.state.value.length === 0;
+    const btnDisabled = this.props.value.length === 0;
     if (this.props.reply.isReplying) {
       return (
         <form id='PostComment' onSubmit={this.onReplySubmit}>
@@ -63,7 +62,7 @@ class PostComment extends React.Component {
             type='text'
             className='post-comment-input'
             placeholder='Add a comment...'
-            value={this.state.value}
+            value={this.props.value}
             onChange={this.onTextChange}
           ></textarea>
           <button type='submit' className='post-comment-btn btn' disabled={btnDisabled}>
@@ -78,7 +77,7 @@ class PostComment extends React.Component {
           type='text'
           className='post-comment-input'
           placeholder='Add a comment...'
-          value={this.state.value}
+          value={this.props.value}
           onChange={this.onTextChange}
         ></textarea>
         <button type='submit' className='post-comment-btn btn' disabled={btnDisabled}>
@@ -91,21 +90,15 @@ class PostComment extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    // commentText: state.setCommentText.commentText,
     comments: state.commentReducer.comments,
     reply: state.toggleReplyReducer.reply,
+    value: state.postCommentValueReducer.value,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // onTextChange: (e) => dispatch(setCommentText(e.target.value)),
-    // clearComment: () => dispatch(setCommentText("")),
-    // postCommentToDb: (comment) => {
-    //   dispatch(addComment(comment));
-    // },
-  };
-};
-
-// export default connect(mapStateToProps, mapDispatchToProps)(PostComment);
-export default connect(mapStateToProps, { addComment, updateComment })(PostComment);
+export default connect(mapStateToProps, {
+  addComment,
+  updateComment,
+  toggleReply,
+  changePostCommentValue,
+})(PostComment);

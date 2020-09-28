@@ -4,6 +4,7 @@ import {
   TOGGLE_LANDSCAPE,
   UPDATE_COMMENT,
   TOGGLE_REPLY,
+  POST_COMMENT_VALUE,
 } from "./types";
 
 const initialStateComments = {
@@ -38,7 +39,7 @@ const initialStateLandscape = {
 export const toggleLandscapeReducer = (state = initialStateLandscape, action = {}) => {
   switch (action.type) {
     case TOGGLE_LANDSCAPE:
-      return { ...state, isLandscape: !state.isLandscape };
+      return { isLandscape: !state.isLandscape };
     default:
       return state;
   }
@@ -51,7 +52,20 @@ const initialStateReply = {
 export const toggleReplyReducer = (state = initialStateReply, action = {}) => {
   switch (action.type) {
     case TOGGLE_REPLY:
-      return { ...state, reply: action.payload };
+      return { reply: action.payload };
+    default:
+      return state;
+  }
+};
+
+const initialPostCommentValue = {
+  value: "",
+};
+
+export const postCommentValueReducer = (state = initialPostCommentValue, action = {}) => {
+  switch (action.type) {
+    case POST_COMMENT_VALUE:
+      return { value: action.payload };
     default:
       return state;
   }

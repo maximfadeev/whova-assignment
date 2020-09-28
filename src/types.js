@@ -3,4 +3,4 @@ export const ADD_COMMENT = "ADD_COMMENT";
 export const TOGGLE_LANDSCAPE = "TOGGLE_LANDSCAPE";
 export const UPDATE_COMMENT = "SET_LIKES";
 export const TOGGLE_REPLY = "TOGGLE_REPLY";
-export const ADD_REPLY = "ADD_REPLY";
+export const POST_COMMENT_VALUE = "POST_COMMENT_VALUE";

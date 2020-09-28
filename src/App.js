@@ -4,24 +4,37 @@ import Header from "./components/Header";
 import Actions from "./components/Actions";
 import Comment from "./components/Comment";
 import PostComment from "./components/PostComment";
-
 import { connect } from "react-redux";
-import { getCommentsFromDb, toggleLandscape } from "./actions";
+import { getCommentsFromDb, toggleLandscape, toggleReply } from "./actions";
 
 class App extends React.Component {
   componentDidMount() {
     this.props.getCommentsFromDb();
   }
 
-  getCommentsBeta() {
-    const comments = this.props.comments.map((comment, index) => (
-      <Comment key={index} comment={{ ...comment }} />
-    ));
-    return comments;
-  }
+  onViewBtnClick = () => {
+    this.props.toggleLandscape();
+    this.props.toggleReply({ isReplying: false, commentId: null });
+  };
+
+  getViewCommentsBtn = () => {
+    if (!this.props.isLandscape) {
+      return (
+        <button className='view-comments-btn btn' onClick={this.onViewBtnClick}>
+          <b>View all {this.props.comments.length} comments</b>
+        </button>
+      );
+    } else {
+      return (
+        <button className='view-comments-btn btn' onClick={this.onViewBtnClick}>
+          <b>Hide all {this.props.comments.length} comments</b>
+        </button>
+      );
+    }
+  };
 
   render() {
-    const hours = <p className="info-text hours">14 hours ago</p>;
+    const hours = <p className='info-text hours'>14 hours ago</p>;
 
     let comments = this.props.comments;
     if (this.props.isLandscape) {
@@ -34,25 +47,22 @@ class App extends React.Component {
 
     if (!this.props.isLandscape) {
       return (
-        <div className="center">
-          <div className="App vertical">
+        <div className='center'>
+          <div className='App vertical'>
             <Header />
-            <img id="post-image" src="sample-post.jpg" alt="sample-post"></img>
+            <img id='post-image' src='sample-post.jpg' alt='sample-post'></img>
             <Actions />
             <b>
-              <p className="info-text">56 likes</p>
+              <p className='info-text'>56 likes</p>
             </b>
 
-            <div className="comments-vertical">
-              <div className="Comment">
-                <p className="comment-text">
+            <div className='comments-vertical'>
+              <div className='Comment'>
+                <p className='comment-text'>
                   <b>nasa</b>&nbsp;Starry night
                 </p>
               </div>
-              <button className="view-comments-btn btn" onClick={this.props.toggleLandscape}>
-                <b>View all {this.props.comments.length} comments</b>
-              </button>
-              {/* {this.getCommentsBeta()} */}
+              {this.getViewCommentsBtn()}
               {comments}
             </div>
 
@@ -64,32 +74,28 @@ class App extends React.Component {
       );
     } else {
       return (
-        <div className="center">
-          <div className="App landscape">
-            <div id="post-image-wrap">
-              <img id="post-image" src="sample-post.jpg" alt="sample-post"></img>
+        <div className='center'>
+          <div className='App landscape'>
+            <div id='post-image-wrap'>
+              <img id='post-image' src='sample-post.jpg' alt='sample-post'></img>
             </div>
-            <div className="landscape-right">
+            <div className='landscape-right'>
               <Header />
-
-              <div className="comments-landscape">
-                <div className="Comment">
-                  <img src="nasa-profile.png" alt="profile" className="poster-picture"></img>
-                  <div className="comment-landscape">
-                    <p className="comment-text ">
+              <div className='comments-landscape'>
+                <div className='Comment'>
+                  <img src='nasa-profile.png' alt='profile' className='poster-picture'></img>
+                  <div className='comment-landscape'>
+                    <p className='comment-text '>
                       <b>nasa</b>&nbsp;Starry night
                     </p>
                   </div>
                 </div>
-                <button className="view-comments-btn btn" onClick={this.props.toggleLandscape}>
-                  <b>Hide all {this.props.comments.length} comments</b>
-                </button>
-                {/* {this.getCommentsBeta()} */}
+                {this.getViewCommentsBtn()}
                 {comments}
               </div>
               <Actions />
               <b>
-                <p className="info-text">56 likes</p>
+                <p className='info-text'>56 likes</p>
               </b>
               {hours}
 
@@ -105,6 +111,7 @@ class App extends React.Component {
 const mapStateToProps = (state) => ({
   comments: state.commentReducer.comments,
   isLandscape: state.toggleLandscapeReducer.isLandscape,
+  reply: state.toggleReplyReducer.reply,
 });
 
-export default connect(mapStateToProps, { getCommentsFromDb, toggleLandscape })(App);
+export default connect(mapStateToProps, { getCommentsFromDb, toggleLandscape, toggleReply })(App);
