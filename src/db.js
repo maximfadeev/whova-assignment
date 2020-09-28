@@ -1,10 +1,25 @@
 const db = {
   getComments() {
-    const comments = localStorage.getItem("comments");
+    const comments = JSON.parse(localStorage.getItem("comments"));
     if (comments === null) {
       return [];
     }
-    return JSON.parse(comments);
+
+    // check each comment to make sure they are all in the right format
+    let i = comments.length;
+    while (i--) {
+      const comment = comments[i];
+      if (
+        !("name" in comment) ||
+        !("text" in comment) ||
+        !("likes" in comment) ||
+        !("replies" in comment) ||
+        !("id" in comment)
+      ) {
+        comments.splice(i, 1);
+      }
+    }
+    return comments;
   },
 
   setComments(comments) {
