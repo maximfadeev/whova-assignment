@@ -20,3 +20,4 @@ npm start
 - User likes persist through state changes
 - User likes reset on reload but persist in database
 - localStorage acts as a database
+- if no database has been foun, db is initialised in index.js
