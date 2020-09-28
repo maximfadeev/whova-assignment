@@ -1,7 +1,7 @@
 const db = {
   getComments() {
     const comments = JSON.parse(localStorage.getItem("comments"));
-    if (comments === null) {
+    if (!Array.isArray(comments) || comments === null) {
       return [];
     }
 
@@ -10,6 +10,7 @@ const db = {
     while (i--) {
       const comment = comments[i];
       if (
+        !(typeof comment === "object") ||
         !("name" in comment) ||
         !("text" in comment) ||
         !("likes" in comment) ||
