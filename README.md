@@ -17,7 +17,7 @@ npm start
 
 ## Info
 
-- User likes persist through state changes
+- User likes persist through View/Hide comments changes
 - User likes reset on reload but persist in database
-- localStorage acts as a database
-- if no database has been foun, db is initialised in index.js
+- Local Storage acts as a database
+- If no database is found, db is initialised in index.js
