@@ -5,6 +5,7 @@ Maxim Fadeev's submission for Whova's assignment
 ## Installation
 
 ```bash
+cd whova-assignment
 npm install
 ```
 
