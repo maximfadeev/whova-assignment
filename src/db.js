@@ -1,30 +1,34 @@
 const db = {
   getComments() {
-    const comments = JSON.parse(localStorage.getItem("comments"));
+    const comments = JSON.parse(localStorage.getItem("commentsDbMaxim"));
     if (!Array.isArray(comments) || comments === null) {
       return [];
     }
+    return comments;
+
+    // no need for checking every comment, simply renamed the database
 
     // check each comment to make sure they are all in the right format
-    let i = comments.length;
-    while (i--) {
-      const comment = comments[i];
-      if (
-        !(typeof comment === "object") ||
-        !("name" in comment) ||
-        !("text" in comment) ||
-        !("likes" in comment) ||
-        !("replies" in comment) ||
-        !("id" in comment)
-      ) {
-        comments.splice(i, 1);
-      }
-    }
-    return comments;
+    //   let i = comments.length;
+    //   while (i--) {
+    //     const comment = comments[i];
+    //     if (
+    //       !(typeof comment === "object") ||
+    //       !("name" in comment) ||
+    //       !("text" in comment) ||
+    //       !("likes" in comment) ||
+    //       !("replies" in comment) ||
+    //       !("id" in comment)
+    //     ) {
+    //       comments.splice(i, 1);
+    //     }
+    //   }
+    //   return comments;
+    // },
   },
 
   setComments(comments) {
-    localStorage.setItem("comments", JSON.stringify(comments));
+    localStorage.setItem("commentsDbMaxim", JSON.stringify(comments));
   },
 
   addComment(comment) {
