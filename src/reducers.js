@@ -1,4 +1,10 @@
-import { FETCH_COMMENTS, ADD_COMMENT, TOGGLE_LANDSCAPE, SET_LIKES, TOGGLE_REPLY } from "./types";
+import {
+  FETCH_COMMENTS,
+  ADD_COMMENT,
+  TOGGLE_LANDSCAPE,
+  UPDATE_COMMENT,
+  TOGGLE_REPLY,
+} from "./types";
 
 const initialStateComments = {
   comments: [],
@@ -10,8 +16,7 @@ export const commentReducer = (state = initialStateComments, action = {}) => {
       return { ...state, comments: action.payload };
     case ADD_COMMENT:
       return { ...state, comments: [...state.comments, action.payload] };
-
-    case SET_LIKES: // this can definitely be better
+    case UPDATE_COMMENT:
       return {
         ...state,
         comments: [

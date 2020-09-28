@@ -41,22 +41,3 @@ const db = {
   },
 };
 export default db;
-
-// export default class db {
-//   getComments() {
-//     let comments = localStorage.getItem("comments");
-//     if (comments === null) {
-//       return [];
-//     } else {
-//       return JSON.parse(comments);
-//     }
-//   }
-
-//   setComments(comments) {
-//     localStorage.setItem("comments", JSON.stringify(comments));
-//   }
-
-//   // setComment(comment) {
-//   //   localSto
-//   // }
-// }

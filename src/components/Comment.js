@@ -2,7 +2,7 @@ import React from "react";
 import LikeButtonIcon from "./LikeButton";
 import CommentFooter from "./CommentFooter";
 import { connect } from "react-redux";
-import { setLikes, toggleLandscape } from "../actions";
+import { updateComment, toggleLandscape } from "../actions";
 import db from "../db";
 
 // change to funciton
@@ -21,7 +21,7 @@ class Comment extends React.Component {
     db.updateCommentLikes(comment);
 
     comment.isLiked = !comment.isLiked;
-    this.props.setLikes(comment);
+    this.props.updateComment(comment);
   }
 
   toggleLiked() {
@@ -69,4 +69,4 @@ const mapStateToProps = (state) => ({
 });
 
 // export default Comment;
-export default connect(mapStateToProps, { setLikes, toggleLandscape })(Comment);
+export default connect(mapStateToProps, { updateComment, toggleLandscape })(Comment);

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addComment, setLikes, setReplyIsLiked } from "../actions";
+import { addComment, updateComment } from "../actions";
 import db from "../db";
 
 class PostComment extends React.Component {
@@ -50,7 +50,7 @@ class PostComment extends React.Component {
     db.addReply(newReply, comment.id);
     newReply.isReplyLiked = false;
     comment.replies.push(newReply);
-    this.props.setReplyIsLiked(comment);
+    this.props.updateComment(comment);
     this.setState({ value: "" });
   }
 
@@ -108,4 +108,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 // export default connect(mapStateToProps, mapDispatchToProps)(PostComment);
-export default connect(mapStateToProps, { addComment, setLikes, setReplyIsLiked })(PostComment);
+export default connect(mapStateToProps, { addComment, updateComment })(PostComment);
