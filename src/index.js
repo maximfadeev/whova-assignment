@@ -14,8 +14,8 @@ import {
 } from "./redux/reducers";
 
 // initialise db if it has not been initialised
-if (localStorage.getItem("comments") == null) {
-  localStorage.setItem("comments", "[]");
+if (localStorage.getItem("commentsDbMaxim") == null) {
+  localStorage.setItem("commentsDbMaxim", "[]");
 }
 
 const rootReducer = combineReducers({
