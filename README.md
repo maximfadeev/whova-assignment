@@ -21,3 +21,5 @@ npm start
 - User likes reset on reload but persist in database
 - Local Storage acts as a database
 - If no database is found, db is initialised in index.js
+
+# Hello From Lisa
