@@ -1,6 +1,7 @@
 # Instagram Post Clone
 
 Maxim Fadeev's submission for Whova's assignment
+
 https://sleepy-neumann-850f55.netlify.app/
 
 ## Installation
